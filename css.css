@@ -1,0 +1,13 @@
+.top{
+    width: 100%;
+    float: left;
+}
+.leftbox {
+    width: 50%;
+    float: left;
+}
+
+.rightbox {
+    width: 50%;
+    float: right;
+}
