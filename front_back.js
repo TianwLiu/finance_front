@@ -1,4 +1,4 @@
-const hostAndPort="trytolog.com:10016"
+
 // main of test
 function test_main(){
 
@@ -14,7 +14,7 @@ function test_main(){
 function getLinkToken(){
 
     $.post(
-        "http://"+hostAndPort+"/auth/getLinkToken",
+        ProtocolHostAndPort+"/auth/getLinkToken",
         {},
         openLinkToken
     );
@@ -59,7 +59,7 @@ function openLinkToken(result){
 
 function postPublicToken(publicToken,metadata){
     $.ajax(
-        "http://"+hostAndPort+"/auth/postPublicToken",
+        ProtocolHostAndPort+"/auth/postPublicToken",
         {
             type:"post",
             data:{
@@ -78,7 +78,7 @@ function postPublicToken(publicToken,metadata){
 
 function addMember(memberId,memberPassWord){
     $.ajax(
-        "http://"+hostAndPort+"/auth/group/addMember",
+        ProtocolHostAndPort+"/auth/group/addMember",
         {
             type:"post",
             data:{
@@ -100,7 +100,7 @@ function addMember(memberId,memberPassWord){
 
 function delMember(memberId){
     $.ajax(
-        "http://"+hostAndPort+"/auth/group/delMember",
+        ProtocolHostAndPort+"/auth/group/delMember",
         {
             type:"post",
             data:{
@@ -128,7 +128,7 @@ function getBalances(onSuccess){
 
     $.ajax({
             async:true,
-            url: "http://"+hostAndPort+"/auth/accounts/get",
+            url: ProtocolHostAndPort+"/auth/accounts/get",
             success: function (result) {
                 console.log("获取个人余额成功");
                 //console.log(result)
@@ -149,7 +149,7 @@ function getGroupBalances(onSuccess){
 
     $.ajax({
             async:true,
-            url: "http://"+hostAndPort+"/auth/group/accounts/get",
+            url: ProtocolHostAndPort+"/auth/group/accounts/get",
             success: function (result) {
                 console.log("获取余额成功");
                 console.log(result);
@@ -173,7 +173,7 @@ function  getTransactions(onSuccess){
 
     $.ajax({
             async:true,
-            url: "http://"+hostAndPort+"/auth/transactions/get",
+            url: ProtocolHostAndPort+"/auth/transactions/get",
             success: function (result) {
                 console.log("获取交易记录成功");
                 //console.log(result);
@@ -194,7 +194,7 @@ function  getGroupTransactions(onSuccess){
 
     $.ajax({
             async:true,
-            url: "http://"+hostAndPort+"/auth/group/transactions/get",
+            url: ProtocolHostAndPort+"/auth/group/transactions/get",
             success: function (result) {
                 console.log("获取交易记录成功");
                 //console.log(result);

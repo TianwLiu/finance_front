@@ -1,4 +1,4 @@
-const hostAndPort="trytolog.com:10016"
+
 function test_main(){
     logIn("test1","sdf");
     // postPublicToken("hello");
@@ -19,7 +19,7 @@ function register(userId, passWord){
         openLinkToken
     );*/
     $.ajax(
-        "http://"+hostAndPort+"/register",
+        ProtocolHostAndPort+"/register",
         {
             type:"post",
             data:{"user_id": userId,
@@ -39,7 +39,7 @@ function register(userId, passWord){
 
 function logIn(userId,passWord){
     $.ajax(
-        "http://"+hostAndPort+"/logIn",
+        ProtocolHostAndPort+"/logIn",
         {
             type:"post",
             data:{"user_id": userId,
