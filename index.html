@@ -17,19 +17,19 @@
     <!--formal page-->
 <section class="section " >
     <div class="box" >
-        <div class="columns">
-            <div class="column is-3">
+        <div class="columns is-desktop">
+            <div class="column is-3-desktop is-12-mobile">
                 user_id:<input v-model="userID" type="text" class="input"  />
             </div>
-            <div class="column is-3">
+            <div class="column is-3-desktop is-12-mobile">
                 password:<input v-model="passWord" type="password" class="input"/>
             </div>
         </div>
-        <div class="columns">
-            <div class="column is-3">
+        <div class="columns is-desktop">
+            <div class="column is-3-desktop is-6-mobile">
                 <button v-on:click="register" class="button is-link is-light " >register</button>
             </div>
-            <div class="column is-3">
+            <div class="column is-3-desktop is-6-mobile">
                 <button v-on:click="logIn" class="button is-link is-light">Log In</button>
             </div>
         </div>
