@@ -160,6 +160,8 @@ requirejs(["vue"],function (Vue) {
                             return "icons/boa_icon.png";
                         case "ins_3":
                             return "icons/chase_icon.png";
+                        case "ins_5":
+                            return "icons/citi_bank.png";
                         case "ins_33":
                             return "icons/discover_icon.png";
                         default:
@@ -377,6 +379,8 @@ requirejs(["vue"],function (Vue) {
                         return "icons/boa_icon.png";
                     case "ins_3":
                         return "icons/chase_icon.png";
+                    case "ins_5":
+                        return "icons/citi_bank.png";
                     case "ins_33":
                         return "icons/discover_icon.png";
                     default:
