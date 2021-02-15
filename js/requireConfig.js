@@ -11,7 +11,9 @@ requirejs.config({
         "plaid":["https://cdn.plaid.com/link/v2/stable/link-initialize"],
         "highcharts":["https://code.highcharts.com"],
         "md5":["https://cdnjs.cloudflare.com/ajax/libs/blueimp-md5/2.18.0/js/md5.min"],
-        "vue":["./lib/vue"],
+        "vue":["https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.2/vue.min",
+            "./lib/vue"
+        ],
         "axios":["https://cdn.jsdelivr.net/npm/axios/dist/axios.min"],
 
     },
