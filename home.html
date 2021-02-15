@@ -4,7 +4,7 @@
     <meta charset="UTF-8" http-equiv="Access-Control-Allow-Origin" content="*">
     <title>Title</title>
     <link rel="stylesheet" type="text/css" href="css/css.css">
-    <link rel="stylesheet" type="text/css" href="css/bulma.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
     <link rel="stylesheet" type="text/css" href="css/highcharts.css">
     <script data-main="js/home" src="js/require.js"></script>
 </head>
@@ -89,32 +89,9 @@
 
                 <box-cashflow-month  v-bind:get_cash_flows_response="self.getCashFlowsResponse"></box-cashflow-month>
             </div>
-            <!--<list-transaction  v-bind:transactions="group.getTransactionsResponse.transactions" v-bind:account_info="accountInfo" ></list-transaction>-->
-            <!--<div class="box" style="height: 50vh" >
 
-                <box-accounts-balance v-for="user_accounts in group.getAccountsResponse.user_accounts_list" v-bind:user_accounts="user_accounts" ></box-accounts-balance>
-
-            </div>-->
-
-
-
-            <!--<div class="columns">
-                <div class="column" style="background-color: #947600">
-                    <box-cashflow-month  v-bind:get_cash_flows_response="group.getCashFlowsResponse"></box-cashflow-month>
-                </div>
-                <div class="column" style="background-color: #00b89c">
-                    <box-totalbalance  v-bind:cashbase="group.getAccountsResponse.cash_base"></box-totalbalance>
-                </div>
-
-            </div>
-            <div class="columns" style="background-color: deepskyblue;padding: 10px;">
-                <div class="box " >
-
-                    <box-accounts-balance v-for="user_accounts in group.getAccountsResponse.user_accounts_list" v-bind:user_accounts="user_accounts"></box-accounts-balance>
-
-                </div>
-            </div>-->
         </div>
+
         <!--right show column -->
         <div class="column is-8-desktop is-12-mobile" >
             <div  v-bind:class="{'loop-window-move':loopFlag,'loop-window-stop':!loopFlag}">
@@ -134,18 +111,21 @@
                     <div style="height: 100vh;overflow: hidden">
                         <h4 class="subtitle is-4">个人</h4>
                         <figure class="highcharts-figure" >
-                            <chart-hl v-bind:result="self.getCashFlowsResponse"></chart-hl>
-                        </figure>
-                        <figure class="highcharts-figure" >
                             <chart-inex v-bind:result="self.getCashFlowsResponse"></chart-inex>
                         </figure>
+                        <figure class="highcharts-figure" >
+                            <chart-hl v-bind:result="self.getCashFlowsResponse"></chart-hl>
+                        </figure>
+
                     </div>
                     <!--page 3-->
                     <div style="height: 100vh;overflow: hidden">
                         <h2 class="title is-2-desktop">组账户</h2>
+                        <div style="overflow: auto;height: 90vh;">
+                            <box-accounts-balance v-for="user_accounts in group.getAccountsResponse.user_accounts_list" v-bind:user_accounts="user_accounts">
+                            </box-accounts-balance>
+                        </div>
 
-                        <box-accounts-balance v-for="user_accounts in group.getAccountsResponse.user_accounts_list" v-bind:user_accounts="user_accounts">
-                        </box-accounts-balance>
 
                     </div>
                     <!--page 4-->

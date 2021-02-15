@@ -123,10 +123,14 @@ requirejs(["vue"],function (Vue) {
                 },
             },
             template:`
-                <div >
-                {{user_id}}&nbsp;余额：{{user_accounts.cash_base.depository_balance}}&nbsp;债务：{{user_accounts.cash_base.credit_liability}}
-                    <table class="table">
-                        <tbody>                            
+                <div style="background-color: ">
+                    <span style="background-color:lightgreen ;color: red" >
+                    {{user_id}}
+                    &nbsp;余额：{{user_accounts.cash_base.depository_balance}}
+                    &nbsp;债务：{{user_accounts.cash_base.credit_liability}}
+                    </span>
+                    <table style="background-color: aquamarine;position: relative;left: 3%">
+                        <tbody >                            
                             <tr v-for="account in accounts"><td>{{account.name}}</td><td>{{account.subtype}}</td><td>{{account.balances.current}}</td></tr>
                            <!-- <tr><td>Adv Plus Banking</td><td>checking</td><td>1882.11</td></tr>
                             <tr><td>Discover it Card (1761)</td><td>credit card</td><td>0</td></tr>-->
@@ -419,7 +423,7 @@ requirejs(["vue"],function (Vue) {
 
         },
         template:`
-        <div ref="list" style="overflow-y: auto;overflow-x: hidden;height: 100%;">
+        <div ref="list" style="overflow-y: auto;overflow-x: hidden;height: 90vh;">
             <div style="background-color: #29b342" >
                 <div class="left">
                     账户
