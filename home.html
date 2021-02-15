@@ -1,200 +1,193 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" >
 <head>
-    <meta charset="UTF-8" http-equiv="Access-Control-Allow-Origin" content="*" />
+    <meta charset="UTF-8" http-equiv="Access-Control-Allow-Origin" content="*">
     <title>Title</title>
-    <link rel="stylesheet" type="text/css" href="css.css">
-    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
-    <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-md5/2.18.0/js/md5.min.js"></script>
-    <script src="BackEndHost.js"></script>
-    <script src="front_back.js"></script>
-
-
-
-    <script>
-        $(document).ready(function (){
-            {
-                initFrontBack();
-                let userId=localStorage.userId;
-                let groupId=localStorage.userId;
-
-                getBalances(function (result){
-                    $("#cashBase").html(renderCashBaseToTableHtml(result.cash_base));
-                    $("#accountsBalance").html(renderAccountsToTableHtml(result));
-                });
-                getTransactions(function (result){
-                    $("#cashFlow").html(renderCashFlowToTableHtml(result.cash_flow));
-                    $("#transactions").html(renderTransactionsTableContentHtml(result.transactions));
-                });
-
-                //note,group data is list
-                getGroupBalances(function (result){
-                    $("#groupCashBase").html(renderCashBaseToTableHtml(result.cash_base));
-                    $("#groupAccountBalances").html(renderAccountsListToTablesHtml(result.user_accounts_list));
-                });
-
-
-                getGroupTransactions(function (result){
-
-                    $("#groupCashFlow").html(renderCashFlowToTableHtml(result.cash_flow));
-                    $("#groupTransactions").html(renderTransactionsTableContentHtml(result.transactions));
-                });
-
-                $("#linkBank").click(function () {
-                    getLinkToken();
-                });
-
-                $("#addMember").click(function (){
-                    addMember($("#member_id").val(),md5($("#member_pass_word").val()));
-                });
-
-                $("#delMember").click(function (){
-                    delMember($("#member_id").val());
-                });
-
-            }
-        });
-
-    </script>
-
+    <link rel="stylesheet" type="text/css" href="css/css.css">
+    <link rel="stylesheet" type="text/css" href="css/bulma.css">
+    <link rel="stylesheet" type="text/css" href="css/highcharts.css">
+    <script data-main="js/home" src="js/require.js"></script>
 </head>
-<body>
-user_id:<input id="member_id" type="text" /></br>
-password<input id="member_pass_word" type="text" /></br>
-<button id="addMember">add Member to my Group</button>
-<button id="delMember">del Member from my Group</button>
-<button id="linkBank">linkBankToCurrentAccount</button>
+<body >
+<!--top beautify layer-->
+<div style="position:fixed;height:100%;width:100%;z-index: -1;">
+   <img src="icons/happy_pig.gif" style="position:absolute;bottom:0%;left: 0%; height: 30%"/>
+</div>
+<div id="home"  >
 
-<div class="leftbox">
-    <h2>Tianwei</h2>
-    <h3>所有账户汇总指标</h3>
-    <div id="cashBase"></div>
-    <h3>各账户余额</h3>
-    <div id="accountsBalance"></div>
 
-    <h3>3月内流水指标</h3>
-    <div id="cashFlow"></div>
 
-    <h2>交易记录</h2>
-    <table id="transactions"></table>
+<!--models repository-->
+    <!--group manage modal-->
+    <div  class="modal" v-bind:class="{'is-active':groupModalFlag}">
+        <div class="modal-background"></div>
+        <div class="modal-content">
+            <div class="box" style="width: fit-content" >
+                <h4 class="subtitle is-4" style="text-align: center">组管理</h4>
+                <div class="columns">
+                    <div class="column">user_id:<input  type="text" class="input" v-model="member.userID" /></div>
+                    <div class="column">password:<input  type="password" class="input" v-model="member.passWord" /></div>
+                </div>
+                <div class="columns ">
+                    <div class="column ">
+                        <button v-on:click="addMember" class="button is-link is-light ">addMember</button>
+                    </div>
+                    <div class="column">
+                        <button v-on:click="delMember" class="button is-link is-light">delMember</button>
+                    </div>
+                </div>
+                <span style="color: #48c774">Note: When del member, password is not necessary.</span>
+            </div>
+        </div>
+        <button class="modal-close is-large" aria-label="close" v-on:click="closeGroupModal"></button>
+    </div>
+
+<!--formal page-->
+    <div class="columns "  >
+
+        <!--left fixed column-->
+        <div class="column is-3-desktop is-12-mobile" >
+
+            <div class="navbar" >
+                <div  class="navbar-menu is-active">
+                    <div class="navbar-start">
+                        <div class="navbar-item has-dropdown is-hoverable">
+                            <a class="navbar-link">
+                                <span class="is-size-4">≡</span>
+                            </a>
+                            <div class="navbar-dropdown">
+                                <a class="navbar-item" v-on:click="linkBank">
+                                    <span class="is-size-6 is-link"> Link account</span>
+                                </a>
+                                <hr class="navbar-divider"/>
+                                <a class="navbar-item" v-on:click="openGroupModal">
+                                    <span class="is-size-6">Group manage</span>
+                                </a>
+                                <hr class="navbar-divider"/>
+                                <a class="navbar-item" v-on:click="loopSwitch">
+                                    <span class="is-size-6">Loop Switch</span>
+                                </a>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <list-notification v-bind:notification="notification"></list-notification>
+            当前组：
+            <div style="border-color: #00d1b2;color:#29b342;border-style: solid;font-size: medium;">
+            <box-totalbalance  v-bind:cashbase="group.getAccountsResponse.cash_base"></box-totalbalance>
+
+            <box-cashflow-month  v-bind:get_cash_flows_response="group.getCashFlowsResponse"></box-cashflow-month>
+            </div>
+            当前用户：
+            <div style="border-color: #ffaf24;color:#4366e5;border-style: solid;font-size: medium;">
+                <box-totalbalance  v-bind:cashbase="self.getAccountsResponse.cash_base"></box-totalbalance>
+
+                <box-cashflow-month  v-bind:get_cash_flows_response="self.getCashFlowsResponse"></box-cashflow-month>
+            </div>
+            <!--<list-transaction  v-bind:transactions="group.getTransactionsResponse.transactions" v-bind:account_info="accountInfo" ></list-transaction>-->
+            <!--<div class="box" style="height: 50vh" >
+
+                <box-accounts-balance v-for="user_accounts in group.getAccountsResponse.user_accounts_list" v-bind:user_accounts="user_accounts" ></box-accounts-balance>
+
+            </div>-->
+
+
+
+            <!--<div class="columns">
+                <div class="column" style="background-color: #947600">
+                    <box-cashflow-month  v-bind:get_cash_flows_response="group.getCashFlowsResponse"></box-cashflow-month>
+                </div>
+                <div class="column" style="background-color: #00b89c">
+                    <box-totalbalance  v-bind:cashbase="group.getAccountsResponse.cash_base"></box-totalbalance>
+                </div>
+
+            </div>
+            <div class="columns" style="background-color: deepskyblue;padding: 10px;">
+                <div class="box " >
+
+                    <box-accounts-balance v-for="user_accounts in group.getAccountsResponse.user_accounts_list" v-bind:user_accounts="user_accounts"></box-accounts-balance>
+
+                </div>
+            </div>-->
+        </div>
+        <!--right show column -->
+        <div class="column is-8-desktop is-12-mobile" >
+            <div  v-bind:class="{'loop-window-move':loopFlag,'loop-window-stop':!loopFlag}">
+                <div  v-bind:class="{'loop-content-move':loopFlag,'loop-content-stop':!loopFlag}">
+                    <!--page 1-->
+                    <div style="height: 100vh;overflow: hidden" >
+                        <h4 class="subtitle is-4">组</h4>
+                        <figure class="highcharts-figure" >
+                            <chart-inex v-bind:result="group.getCashFlowsResponse"></chart-inex>
+                        </figure>
+                        <figure class="highcharts-figure" >
+                            <chart-hl v-bind:result="group.getCashFlowsResponse"></chart-hl>
+                        </figure>
+
+                    </div>
+                    <!--page 2-->
+                    <div style="height: 100vh;overflow: hidden">
+                        <h4 class="subtitle is-4">个人</h4>
+                        <figure class="highcharts-figure" >
+                            <chart-hl v-bind:result="self.getCashFlowsResponse"></chart-hl>
+                        </figure>
+                        <figure class="highcharts-figure" >
+                            <chart-inex v-bind:result="self.getCashFlowsResponse"></chart-inex>
+                        </figure>
+                    </div>
+                    <!--page 3-->
+                    <div style="height: 100vh;overflow: hidden">
+                        <h2 class="title is-2-desktop">组账户</h2>
+
+                        <box-accounts-balance v-for="user_accounts in group.getAccountsResponse.user_accounts_list" v-bind:user_accounts="user_accounts">
+                        </box-accounts-balance>
+
+                    </div>
+                    <!--page 4-->
+                    <div style="height: 100vh;overflow: hidden" >
+                        <h6 class="title is-6-desktop">组最近活动</h6>
+                        <latest-trans  v-bind:transactions="group.getTransactionsResponse.transactions" v-bind:account_info="accountInfo" >
+                        </latest-trans>
+                    </div>
+
+                    <!--page 5-->
+                    <div style="height: 100vh;overflow: hidden" >
+                        <h6 class="title is-6-desktop">组交易历史</h6>
+                        <div class="columns">
+
+                            <div class="column " style="background-color: goldenrod;height: 100vh">
+                                <list-transaction  v-bind:transactions="group.getTransactionsResponse.transactions" v-bind:account_info="accountInfo" class="box">
+                                </list-transaction>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!--page 6-->
+                    <div style="height: 100vh;overflow: hidden" >
+                        <h6 class="title is-6-desktop">个人交易历史</h6>
+                        <div class="columns">
+                            <div class="column" style="background-color: hotpink;height: 100vh">
+                                <list-transaction v-bind:transactions="self.getTransactionsResponse.transactions" v-bind:account_info="accountInfo" class="box">
+                                </list-transaction>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 </div>
-
-<div class="rightbox" id="group">
-    <h2 >Family</h2>
-
-    <h3>所有账户汇总指标</h3>
-    <div id="groupCashBase"></div>
-
-    <h3>各账户余额</h3>
-    <div id="groupAccountBalances"></div>
-
-    <h3>3月内流水指标</h3>
-    <div id="groupCashFlow"></div>
-
-    <h2>交易记录</h2>
-    <table id="groupTransactions"></table>
-
-</div>
-
-
 
 </body>
-<script>
-function logHome(){
-
-}
-//index button listener
-/*function registerButtonListener(){
-    index($("#user_id").eval(),$("#pass_word").eval());
-}*/
-
-//result is the value of "cash_base"
-function  renderCashBaseToTableHtml(result){
-    if(result==null){
-        return
-    }
-    return "<table>"+
-        "<tr><td>"+"总余额："+"</td><td>"+result.depository_balance+"</td></tr>"+
-        "<tr><td>"+"总信用卡债务"+"</td><td>"+result.credit_liability+"</td></tr>"+
-
-        "</table>"
-}
-
-
-
-//result is the value of "user_accounts_list"
-function renderAccountsListToTablesHtml(result){
-    if(result==null){
-        return
-    }
-    let tablesHtml="";
-    for(let j=0;j<result.length;j++) {
-        tablesHtml+=renderAccountsToTableHtml(result[j]);
-    }
-    return tablesHtml
-
-}
-
-//result is the value of user_accounts
-function renderAccountsToTableHtml(result){
-    if(result==null){
-        return
-    }
-    let tableHtml="<table>";
-    tableHtml+="<caption>"+result.user_id+"</caption>";
-
-    let accounts = result.accounts;
-    if(accounts==null){
-        return
-    }
-    for (let i = 0; i < accounts.length; i++) {
-
-        let content = "<td>" + accounts[i].name + "</td>" +
-            "<td>" + accounts[i].subtype + "</td>" +
-            "<td>" + accounts[i].balances.current + "</td>";
-
-        let html_tr = "<tr>" + content + "</tr>"
-        tableHtml += html_tr;
-
-    }
-
-    tableHtml+="</table>"
-    return  tableHtml
-}
-
-
-function renderCashFlowToTableHtml(result){
-    if(result==null){
-        return
-    }
-    return "<table>"+
-        "<tr><td>"+"收入："+"</td><td>"+result.Income+"</td></tr>"+
-        "<tr><td>"+"消费"+"</td><td>"+result.Expense+"</td></tr>"+
-        "<tr><td>"+"财政积累"+"</td><td>"+result.Indicators.R_finance_accumulation+"</td></tr>"+
-        "<tr><td>"+"财政健康指数"+"</td><td>"+result.Indicators.R_finance_health+"</td></tr>"+
-        "</table>"
-
-}
-
-function renderTransactionsTableContentHtml(transactions){
-    if(transactions==null){
-        return
-    }
-    let html="";
-    for(let i=0; i<transactions.length; i++){
-
-        let content="<td>"+transactions[i].amount+"</td>"+
-            "<td>"+transactions[i].date+"</td>"+
-            "<td>"+transactions[i].name+"</td>"+
-           // "<td>"+transactions[i].payment_channel+"</td>"+
-            "<td>"+transactions[i].location.region+"</td>";
-        let html_tr="<tr>"+content+"</tr>"
-        html+=html_tr;
-
-    }
-    return html
-}
-</script>
 </html>

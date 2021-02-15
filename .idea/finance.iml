@@ -11,10 +11,8 @@
     <orderEntry type="library" name="jquery" level="application" />
     <orderEntry type="library" name="@types/jsdom" level="application" />
     <orderEntry type="library" name="@types/jquery" level="application" />
-    <orderEntry type="library" name="@types/npm" level="application" />
     <orderEntry type="library" name="@types/jsdom" level="application" />
     <orderEntry type="library" name="@types/jquery" level="application" />
-    <orderEntry type="library" name="@types/npm" level="application" />
     <orderEntry type="library" name="link-initialize" level="application" />
   </component>
 </module>
