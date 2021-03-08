@@ -332,7 +332,14 @@ requirejs(["vue"],function (Vue) {
             },
 
             setLatestTrans:function () {
-                let dateEnd=new Date();
+
+                let now=new Date();
+                let today0AMStr=now.getFullYear()+"-"+(now.getMonth()+1)+"-"+now.getDate();
+
+                let today12PM=new Date(today0AMStr);
+                today12PM.setDate(new Date(today0AMStr).getDate()+1);
+
+                let dateEnd=today12PM;
                 dateEnd.setDate(dateEnd.getDate()-7);
                 let position=0;
                 for(let i=0;i<this.transactions.length;i++){
@@ -348,7 +355,7 @@ requirejs(["vue"],function (Vue) {
                     if(dateTrans<dateEnd){
                         break;
                     }
-                    let index=dateTrans.getDate()+1-dateEnd.getDate();
+                    let index=Math.ceil((dateTrans-dateEnd)/ (1000 * 60 * 60 * 24));
                     let transLine=this.checkSplice(this.transactions[i].account_id);
                     if(transLine==null){
                         let newLine={
